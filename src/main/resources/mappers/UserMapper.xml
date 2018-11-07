@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wzs.shirospring.mapper.UserMapper">
+
+    <resultMap id="baseResultMap" type="com.wzs.shirospring.model.User">
+        <id property="uid" column="uid"/>
+        <result property="username" column="username"/>
+        <result property="password" column="password"/>
+        <collection property="roleSet" ofType="com.wzs.shirospring.model.Role">
+            <id property="rid" column="rid"/>
+            <result property="rname" column="rname"/>
+            <collection  property="permissions" ofType="com.wzs.shirospring.model.Permission">
+                <id property="pid" column="pid"/>
+                <result property="pname" column="pname"/>
+                <result property="url" column="url"/>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <select id="queryUserByUsername" parameterType="string" resultMap="baseResultMap">
+     select u.*
+        ,r.*,p.*
+        FROM user u
+        inner join user_role ur on ur.uid = u.uid
+        inner join role r on ur.rid = r.rid
+        inner join permission_role pr on pr.rid = r.rid
+        inner join permission p on pr.pid = p.pid
+        where
+        u.username = #{username}
+    </select>
+
+
+
+
+
+</mapper>
